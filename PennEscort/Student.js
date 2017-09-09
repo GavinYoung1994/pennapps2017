@@ -1,6 +1,8 @@
 import React from 'react';
 import Button from 'apsl-react-native-button';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import PropTypes from 'prop-types';
+import { StyleSheet, Text, View, TextInput, ActivityIndicator } from 'react-native';
+const timer = require('react-native-timer');
 
 export default class Student extends React.Component {
   static propTypes = {
@@ -10,13 +12,14 @@ export default class Student extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      requestStatus: 0 //0 for no request, 1 for waiting for request confirmation, 2 for request sucess
+      requestStatus: 0, //0 for no request, 1 for request sent, 2 for request in queue, 3 for request success
+      location: ''
 	  };
   }
 
   requestSecurityEscort = () => {
     this.setState({requestStatus: 1});
-    fetch(`http://10.218.124.57:50008/2!${this.state.usernameText}!${this.state.passwordText}`, {
+    fetch(`http://10.218.124.57:50008/3!${this.state.getHash()}!${this.state.location}`, {
         method: 'GET',
         headers: {
           'Accept': 'text/html'
@@ -24,16 +27,26 @@ export default class Student extends React.Component {
       })
     .then((response) => {
       if(response.status == 200){
-        this.props.refreshHash(response._bodyText);
-        this.props.changeLoginStatus('security');
-      }else{
-        alert('login failed');
+        this.setState({requestStatus: 2});
+        while(this.state.requestStatus === 2){
+          fetch(`http://10.218.124.57:50008/7!${this.state.getHash()}!${this.state.location}`, {
+              method: 'GET',
+              headers: {
+                'Accept': 'text/html'
+              }
+            })
+          .then((response2) => {
+            if(response2 == 200) {
+              this.setState({requestStatus: 3});
+            }else{
+              console.log("beat");
+              timer.setTimeout(this, 'heartbeat', ()=>{}, 10000);
+            }
+          })
+        }
       }
-      this.setState({isLoading: false});
     })
     .catch((error) => {
-      alert('login failed');
-      this.setState({isLoading: false});
     });
   }
 
@@ -45,10 +58,25 @@ export default class Student extends React.Component {
     return (
       <View>
         {
-          this.state.requestStatus === 0 && <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.requestSecurityEscort}>Request Security Escort</Button>
+          this.state.requestStatus === 0 && 
+          <View>
+           <TextInput
+            style={styles.textinputStyle}
+            onChangeText={(location) => this.setState({location})}
+            value={this.state.location}
+            />
+            <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.requestSecurityEscort}>Request Security Escort</Button>
+          </View>
+        }
+        {this.state.requestStatus === 1 && <ActivityIndicator style={styles.loadingStyle}/>}
+        {this.state.requestStatus === 2 && 
+          <View>
+            <Text>Request in queue, waiting for confirmation</Text>
+            <ActivityIndicator style={styles.loadingStyle}/>
+          </View>
         }
         {
-          this.state.requestStatus === 2 && <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.pickUp}>Picked Up</Button>
+          this.state.requestStatus === 3 && <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.pickUp}>Picked Up</Button>
         }
       </View>
     );
@@ -61,5 +89,15 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     width: 180,
     height: 60
+  },
+  loadingStyle: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  textinputStyle: {
+    height: 40, 
+    width: 180, 
+    borderColor: 'gray', 
+    borderWidth: 1
   }
 })

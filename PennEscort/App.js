@@ -44,11 +44,11 @@ export default class App extends React.Component {
           this.state.login.length === 0 && 
           <Login 
           changeLoginStatus = {this.changeLoginStatus}
-          getHash = {this.getHash}
+          refreshHash = {this.refreshHash}
           />
         }
         {
-          this.state.login === 'student' && <Student refreshHash = {this.refreshHash}/>
+          this.state.login === 'student' && <Student getHash = {this.getHash}/>
         }
         {
           this.state.login === 'security' && <Security/>
