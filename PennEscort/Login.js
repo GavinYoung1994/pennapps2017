@@ -32,7 +32,7 @@ export default class Login extends React.Component {
     return (
       <View>
 	      <View >
-			<View style={{flexDirection: 'row'}}>
+			<View style={{flexDirection: 'row', marginBottom: 10}}>
 		        <Text>Username: </Text>
 		        <TextInput
 		        style={{height: 40, width: 180, borderColor: 'gray', borderWidth: 1}}
@@ -40,7 +40,7 @@ export default class Login extends React.Component {
 		        value={this.state.usernameText}
 		        />
 			</View>
-			<View style={{flexDirection: 'row'}}>
+			<View style={{flexDirection: 'row', marginBottom: 10}}>
 				<Text>Password:  </Text>
 				<TextInput
 				style={{height: 40, width: 180, borderColor: 'gray', borderWidth: 1}}
