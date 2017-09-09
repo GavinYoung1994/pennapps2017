@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 
 export default class ChoosePickup extends React.Component {
   static propTypes = {
-    getStudentInfo: PropTypes.func.isRequired
+    selectedStudent: PropTypes.object.isRequired
   }
 
   constructor(props) {

@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList} from 'react-native';
+import { List, ListItem, SearchBar } from 'react-native-elements';
 
 export default class Security extends React.Component {
   constructor(props) {
@@ -30,12 +31,24 @@ export default class Security extends React.Component {
     return (
       <View>
         {!this.state.selectedStudent && 
-          <View><Text>Current Requests</Text> 
-          {this.state.dummy.map((i) => {
-            console.log(i);
-            return <Button key={i.id} onPress={()=>{this.expandRequestItem(i)}} title={i.key+" at "+i.location}/>
-          })} 
-          </View>}
+          <View>
+            <Text>Current Requests</Text> 
+            <List style={{width: 400}}>
+              <FlatList
+                data = {this.state.dummy}
+                renderItem = {({item}) => (
+                  <ListItem
+                    title={`${item.key}`}
+                    subtitle={`${item.location}`}
+                    containerStyle={{ borderBottomWidth: 0 }}
+                    onPress={() => {this.expandRequestItem(item)}}
+                  />
+                )}
+              />
+            </List>
+          </View>
+        }
+
         
          {this.state.selectedStudent && 
           <View><Text>{this.state.selectedStudent.key}</Text>
