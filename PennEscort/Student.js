@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from 'apsl-react-native-button';
+
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 
 export default class Student extends React.Component {

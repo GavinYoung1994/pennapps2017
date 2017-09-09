@@ -1,8 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, FlatList} from 'react-native';
-import { List, ListItem, SearchBar } from 'react-native-elements';
+import PropTypes from 'prop-types';
+import { StyleSheet, Text, View, Button, FlatList, TextInput} from 'react-native';
+import { List, ListItem} from 'react-native-elements';
 
 export default class Security extends React.Component {
+  static propTypes = {
+    getHash: PropTypes.func.isRequired
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -12,7 +16,8 @@ export default class Security extends React.Component {
         {id: 3, key:'Jon', location: 'Hornyland'},
         {id: 4, key:'Marcus', location:'Stable'}
       ],
-      selectedStudent : null
+      selectedStudent : null,
+      ETA : ''
 	  };
   }
 
@@ -25,8 +30,32 @@ export default class Security extends React.Component {
   }
 
   confirmPickup = (Id) => {
+    console.log(`${this.props.getHash()}`);
+    if (this.state.ETA === '') {
+      alert('ETA can not be empty!');
+    }
+    else {
+      fetch(`http://10.218.124.57:50008/2!${Id}!${this.props.getHash()}!${this.state.ETA}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/html'
+        }
+      })
+    .then((response) => {
+      if(response.status == 200){
+        alert('confirm pickup succeeded');
+      }else{
+        alert('confirm pickup failed');
+      }
+    })
+    .catch((error) => {
+      alert('confirm pickup failed');
+    });
+    }
+    
 
   }
+
   render() {
     return (
       <View>
@@ -53,6 +82,14 @@ export default class Security extends React.Component {
          {this.state.selectedStudent && 
           <View><Text>{this.state.selectedStudent.key}</Text>
           <Text>{this.state.selectedStudent.location}</Text>
+          <View style={{flexDirection: 'row', marginBottom: 10}}>
+          <Text>ETA:  </Text>
+            <TextInput
+            style={styles.textinputStyle}
+            onChangeText={(ETA) => this.setState({ETA})}
+            value={this.state.ETA}
+            />
+          </View>
           <Button onPress={() => {this.confirmPickup(this.state.selectedStudent.id)}} title="Confirm Pickup!"/>
           <Button onPress={this.backToList} title="Back"/></View>
           }
@@ -62,3 +99,12 @@ export default class Security extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  textinputStyle: {
+    height: 40, 
+    width: 180, 
+    borderColor: 'gray', 
+    borderWidth: 1
+  }
+})
