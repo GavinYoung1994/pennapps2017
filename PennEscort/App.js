@@ -22,6 +22,10 @@ export default class App extends React.Component {
     this.setState({hash:hash});
   }
 
+  getHash = () => {
+    return this.state.hash;
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -40,11 +44,11 @@ export default class App extends React.Component {
           this.state.login.length === 0 && 
           <Login 
           changeLoginStatus = {this.changeLoginStatus}
-          refreshHash = {this.refreshHash}
+          getHash = {this.getHash}
           />
         }
         {
-          this.state.login === 'student' && <Student/>
+          this.state.login === 'student' && <Student refreshHash = {this.refreshHash}/>
         }
         {
           this.state.login === 'security' && <Security/>

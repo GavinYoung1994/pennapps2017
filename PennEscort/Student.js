@@ -3,6 +3,10 @@ import Button from 'apsl-react-native-button';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 
 export default class Student extends React.Component {
+  static propTypes = {
+    getHash: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -11,7 +15,26 @@ export default class Student extends React.Component {
   }
 
   requestSecurityEscort = () => {
-    this.setState({requestStatus: 2});
+    this.setState({requestStatus: 1});
+    fetch(`http://10.218.124.57:50008/2!${this.state.usernameText}!${this.state.passwordText}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/html'
+        }
+      })
+    .then((response) => {
+      if(response.status == 200){
+        this.props.refreshHash(response._bodyText);
+        this.props.changeLoginStatus('security');
+      }else{
+        alert('login failed');
+      }
+      this.setState({isLoading: false});
+    })
+    .catch((error) => {
+      alert('login failed');
+      this.setState({isLoading: false});
+    });
   }
 
   pickUp = () => {
