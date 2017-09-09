@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import Button from 'apsl-react-native-button';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 
 export default class Student extends React.Component {
   constructor(props) {
@@ -21,12 +22,21 @@ export default class Student extends React.Component {
     return (
       <View>
         {
-          this.state.requestStatus === 0 && <Button onPress={this.requestSecurityEscort} title="Request Security Escort"/>
+          this.state.requestStatus === 0 && <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.requestSecurityEscort}>Request Security Escort</Button>
         }
         {
-          this.state.requestStatus === 2 && <Button onPress={this.pickUp} title="Picked Up"/>
+          this.state.requestStatus === 2 && <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.pickUp}>Picked Up</Button>
         }
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  buttonStyle: {
+    backgroundColor: '#011F5B',
+    borderWidth: 2,
+    width: 180,
+    height: 60
+  }
+})
