@@ -51,7 +51,7 @@ export default class App extends React.Component {
           this.state.login === 'student' && <Student getHash = {this.getHash}/>
         }
         {
-          this.state.login === 'security' && <Security/>
+          this.state.login === 'security' && <Security getHash = {this.getHash}/>
         }
       </View>
     );

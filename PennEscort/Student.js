@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from 'apsl-react-native-button';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, TextInput, ActivityIndicator } from 'react-native';

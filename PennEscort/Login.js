@@ -43,25 +43,26 @@ export default class Login extends React.Component {
 
   securityLogin = () => {
   	this.setState({isLoading: true});
-  	fetch(`http://10.218.124.57:50008/2!${this.state.usernameText}!${this.state.passwordText}`, {
-  		method: 'GET',
-  		headers: {
-  			'Accept': 'text/html'
-  		}
-  	})
-	.then((response) => {
-		if(response.status == 200){
-			this.props.refreshHash(response._bodyText);
-			this.props.changeLoginStatus('security');
-		}else{
-			alert('login failed');
-		}
-		this.setState({isLoading: false});
-	})
-	.catch((error) => {
-		alert('login failed');
-		this.setState({isLoading: false});
-	});
+ //  	fetch(`http://10.218.124.57:50008/2!${this.state.usernameText}!${this.state.passwordText}`, {
+ //  		method: 'GET',
+ //  		headers: {
+ //  			'Accept': 'text/html'
+ //  		}
+ //  	})
+	// .then((response) => {
+	// 	if(response.status == 200){
+	// 		this.props.refreshHash(response._bodyText);
+	// 		this.props.changeLoginStatus('security');
+	// 	}else{
+	// 		alert('login failed');
+	// 	}
+	// 	this.setState({isLoading: false});
+	// })
+	// .catch((error) => {
+	// 	alert('login failed');
+	// 	this.setState({isLoading: false});
+	// });
+	this.props.changeLoginStatus('security');
   }
 
   render() {
