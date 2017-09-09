@@ -20,13 +20,14 @@ export default class Login extends React.Component {
 
   studentLogin = () => {
   	this.setState({isLoading: true});
-  	fetch(`http://10.218.124.57:50008/1!${this.state.usernameText}!${this.state.passwordText}`, {
+  	fetch(`http://54.84.208.56:50008/1!${this.state.usernameText}!${this.state.passwordText}`, {
   		method: 'GET',
   		headers: {
   			'Accept': 'text/html'
   		}
   	})
 	.then((response) => {
+		console.log(response);
 		if(response.status == 200){
 			this.props.refreshHash(response._bodyText);
 			this.props.changeLoginStatus('student');
@@ -36,6 +37,7 @@ export default class Login extends React.Component {
 		this.setState({isLoading: false});
 	})
 	.catch((error) => {
+		console.log(error);
 		alert('login failed');
 		this.setState({isLoading: false});
 	});
@@ -43,26 +45,25 @@ export default class Login extends React.Component {
 
   securityLogin = () => {
   	this.setState({isLoading: true});
- //  	fetch(`http://10.218.124.57:50008/2!${this.state.usernameText}!${this.state.passwordText}`, {
- //  		method: 'GET',
- //  		headers: {
- //  			'Accept': 'text/html'
- //  		}
- //  	})
-	// .then((response) => {
-	// 	if(response.status == 200){
-	// 		this.props.refreshHash(response._bodyText);
-	// 		this.props.changeLoginStatus('security');
-	// 	}else{
-	// 		alert('login failed');
-	// 	}
-	// 	this.setState({isLoading: false});
-	// })
-	// .catch((error) => {
-	// 	alert('login failed');
-	// 	this.setState({isLoading: false});
-	// });
-	this.props.changeLoginStatus('security');
+  	fetch(`http://54.84.208.56:50008/2!${this.state.usernameText}!${this.state.passwordText}`, {
+  		method: 'GET',
+  		headers: {
+  			'Accept': 'text/html'
+  		}
+  	})
+	.then((response) => {
+		if(response.status == 200){
+			this.props.refreshHash(response._bodyText);
+			this.props.changeLoginStatus('security');
+		}else{
+			alert('login failed');
+		}
+		this.setState({isLoading: false});
+	})
+	.catch((error) => {
+		alert('login failed');
+		this.setState({isLoading: false});
+	});
   }
 
   render() {

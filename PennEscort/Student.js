@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'apsl-react-native-button';
-import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, TextInput, ActivityIndicator } from 'react-native';
 const timer = require('react-native-timer');
 
@@ -20,7 +19,7 @@ export default class Student extends React.Component {
 
   requestSecurityEscort = () => {
     this.setState({requestStatus: 1});
-    fetch(`http://10.218.124.57:50008/3!${this.state.getHash()}!${this.state.location}`, {
+    fetch(`http://54.84.208.56:50008/3!${this.props.getHash()}!${this.state.location}`, {
         method: 'GET',
         headers: {
           'Accept': 'text/html'
@@ -29,22 +28,20 @@ export default class Student extends React.Component {
     .then((response) => {
       if(response.status == 200){
         this.setState({requestStatus: 2});
-        while(this.state.requestStatus === 2){
-          fetch(`http://10.218.124.57:50008/7!${this.state.getHash()}!${this.state.location}`, {
-              method: 'GET',
-              headers: {
-                'Accept': 'text/html'
-              }
-            })
-          .then((response2) => {
-            if(response2 == 200) {
+        timer.setInterval(this, 'heartbeat', ()=>{
+          fetch(`http://54.84.208.56:50008/7!${this.props.getHash()}!${this.state.location}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'text/html'
+            }
+          }).then((response2)=>{
+            if(response2.status == 200){
               this.setState({requestStatus: 3});
-            }else{
-              console.log("beat");
-              timer.setTimeout(this, 'heartbeat', ()=>{}, 10000);
+              console.log(response2);
+              timer.clearInterval(this);
             }
           })
-        }
+        }, 30000);
       }
     })
     .catch((error) => {

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Button, FlatList, TextInput} from 'react-native';
 import { List, ListItem} from 'react-native-elements';
+const timer = require('react-native-timer');
 
 export default class Security extends React.Component {
   static propTypes = {
@@ -11,13 +12,15 @@ export default class Security extends React.Component {
     super(props);
     this.state = {
       dummy: [
-        {id: 1, key:'Gavin', location: 'Dreamland'},
+        {id: 'gavin', key:'Gavin', location: 'Dreamland'},
         {id: 2, key:'Rex', location: 'Nightmareland'},
         {id: 3, key:'Jon', location: 'Hornyland'},
         {id: 4, key:'Marcus', location:'Stable'}
       ],
       selectedStudent : null,
-      ETA : ''
+      ETA : '',
+      pickupState : 0, //0 for no confirm pickup, 1 for pickup selected, 2 for escort completed
+      location : ''
 	  };
   }
 
@@ -35,7 +38,7 @@ export default class Security extends React.Component {
       alert('ETA can not be empty!');
     }
     else {
-      fetch(`http://10.218.124.57:50008/2!${Id}!${this.props.getHash()}!${this.state.ETA}`, {
+      fetch(`http://54.84.208.56:50008/5!${Id}!${this.props.getHash()}!${this.state.ETA}`, {
         method: 'GET',
         headers: {
           'Accept': 'text/html'
@@ -43,7 +46,21 @@ export default class Security extends React.Component {
       })
     .then((response) => {
       if(response.status == 200){
+        this.setState({pickupState : 1});
         alert('confirm pickup succeeded');
+        timer.setInterval(this, 'heartbeat', ()=>{
+          fetch(`http://54.84.208.56:50008/7!${this.props.getHash()}!${this.state.location}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'text/html'
+            }
+          }).then((response2)=>{
+            if(response2.status == 200){
+              this.setState({requestStatus: 3});
+              timer.clearInterval(this);
+            }
+          })
+        }, 30000);
       }else{
         alert('confirm pickup failed');
       }
