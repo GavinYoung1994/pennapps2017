@@ -13,7 +13,9 @@ export default class Student extends React.Component {
     super(props);
     this.state = {
       requestStatus: 0, //0 for no request, 1 for request sent, 2 for request in queue, 3 for request success
-      location: ''
+      location: '',
+      securityInfo: {},
+      eta
 	  };
   }
 
@@ -36,19 +38,21 @@ export default class Student extends React.Component {
             }
           }).then((response2)=>{
             if(response2.status == 200){
-              this.setState({requestStatus: 3});
-              console.log(response2);
               timer.clearInterval(this);
+              const responseArray = response2._bodyText.split('!');
+              this.setState({securityInfo: JSON.parse(responseArray[0])});
+              this.setState({eta: responseArray[1]});
+              this.setState({requestStatus: 3});
             }
           })
-        }, 30000);
+        }, 5000);
       }
     })
     .catch((error) => {
     });
   }
 
-  pickUp = () => {
+  finish = () => {
     this.setState({requestStatus: 0});
   }
 
@@ -74,7 +78,11 @@ export default class Student extends React.Component {
           </View>
         }
         {
-          this.state.requestStatus === 3 && <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.pickUp}>Picked Up</Button>
+          this.state.requestStatus === 3 && 
+          <View>
+            <Text>{`${this.state.securityInfo.name} will be there in approximately ${this.state.eta} and their phone number is ${this.state.securityInfo.phone}`}</Text>
+            <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.finish}>Finish</Button>
+          </View>
         }
       </View>
     );

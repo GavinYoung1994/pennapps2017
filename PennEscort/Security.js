@@ -16,31 +16,29 @@ export default class Security extends React.Component {
         {id: 3, key:'Jon', location: 'Hornyland'},
         {id: 4, key:'Marcus', location:'Stable'}
       ],
-      studentInfo : {},
+      studentInfo : '',
       selectedStudent : null,
       ETA : '',
 	  };
   }
 
-  getPickupList() {
-     timer.setInterval(this, 'heartbeat', ()=>{
+  getPickupList = () =>{
           fetch('http://54.84.208.56:50008/8', {
             method: 'GET',
             headers: {
               'Accept' : 'text/html'
             }
             }).then((response) => {
-              if (response.status === 200) {
-                this.setState(studentInfo : JSON.parse(response));
+              if (response.status == 200) {
+                this.setState({studentInfo: response._bodyText});
+                alert(this.state.studentInfo);
               }
               else {
                 alert('Failed to get student infomation');
               }
             }).catch((error) => {
               alert('Failted to get student info');
-            })
-        }, 30000);
-    ;
+            });
   }
 
   expandRequestItem = (student) => {
@@ -81,6 +79,7 @@ export default class Security extends React.Component {
   render() {
     return (
       <View>
+        <Button onPress={this.getPickupList} title="Refresh pickup list"/>
         {!this.state.selectedStudent && 
           <View>
             <Text>Current Requests</Text> 
@@ -116,8 +115,7 @@ export default class Security extends React.Component {
           <Button onPress={this.backToList} title="Back"/></View>
           }
       </View>
-     
-    
+        
     );
   }
 }
