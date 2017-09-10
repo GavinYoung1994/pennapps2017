@@ -11,7 +11,6 @@ export default class App extends React.Component {
       login: '',
       hash: ''
     }
-    // 158.130.165.207:50008;
   }
 
   changeLoginStatus = (state) => {

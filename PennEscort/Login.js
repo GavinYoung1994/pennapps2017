@@ -27,7 +27,6 @@ export default class Login extends React.Component {
   		}
   	})
 	.then((response) => {
-		console.log(response);
 		if(response.status == 200){
 			this.props.refreshHash(response._bodyText);
 			this.props.changeLoginStatus('student');
@@ -37,7 +36,6 @@ export default class Login extends React.Component {
 		this.setState({isLoading: false});
 	})
 	.catch((error) => {
-		console.log(error);
 		alert('login failed');
 		this.setState({isLoading: false});
 	});

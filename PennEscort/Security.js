@@ -19,6 +19,8 @@ export default class Security extends React.Component {
       studentInfo : [],
       selectedStudent : null,
       ETA : '',
+      pickedUpStudent: null,
+      pickUpLocation: ''
 	  };
   }
 
@@ -60,6 +62,10 @@ export default class Security extends React.Component {
     this.setState({selectedStudent: null});
   }
 
+  finish = () => {
+    this.setState({pickedUpStudent: null});
+  }
+
   confirmPickup = (Id) => {
     if (this.state.ETA === '') {
       alert('ETA can not be empty!');
@@ -73,6 +79,9 @@ export default class Security extends React.Component {
       })
     .then((response) => {
       if(response.status == 200){
+        const responseArray = response._bodyText.split('!');
+        this.setState({pickedUpStudent: JSON.parse(responseArray[0].replace(/'/g, '"'))});
+        this.setState({pickUpLocation:responseArray[1]});
         alert('confirm pickup succeeded');
       }else{
         alert('confirm pickup failed');
@@ -110,9 +119,10 @@ export default class Security extends React.Component {
         }
 
         
-         {this.state.selectedStudent && 
+         {this.state.selectedStudent && !this.state.pickedUpStudent &&
           <View><Text>{this.state.selectedStudent.key}</Text>
           <Text>{this.state.selectedStudent.location}</Text>
+          <Text>{this.state.selectedStudent.phone}</Text>
           <View style={{flexDirection: 'row', marginBottom: 10}}>
           <Text>ETA:  </Text>
             <TextInput
@@ -123,6 +133,12 @@ export default class Security extends React.Component {
           </View>
           <Button onPress={() => {this.confirmPickup(this.state.selectedStudent.hashId)}} title="Confirm Pickup!"/>
           <Button onPress={this.backToList} title="Back"/></View>
+          }
+          {
+            this.state.pickedUpStudent &&
+            <View>
+            <Text>{`The student you are picking up is ${this.state.pickedUpStudent.name}, they are at ${this.state.pickUpLocation}, and you can call them at ${this.state.pickedUpStudent.phone}`}</Text>
+            </View>
           }
       </View>
         

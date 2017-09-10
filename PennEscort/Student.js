@@ -15,7 +15,7 @@ export default class Student extends React.Component {
       requestStatus: 0, //0 for no request, 1 for request sent, 2 for request in queue, 3 for request success
       location: '',
       securityInfo: {},
-      eta
+      eta:''
 	  };
   }
 
@@ -38,9 +38,11 @@ export default class Student extends React.Component {
             }
           }).then((response2)=>{
             if(response2.status == 200){
+              console.log(response2);
               timer.clearInterval(this);
               const responseArray = response2._bodyText.split('!');
-              this.setState({securityInfo: JSON.parse(responseArray[0])});
+              console.log(responseArray);
+              this.setState({securityInfo: JSON.parse(responseArray[0].replace(/'/g, '"'))});
               this.setState({eta: responseArray[1]});
               this.setState({requestStatus: 3});
             }
@@ -58,7 +60,7 @@ export default class Student extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
         {
           this.state.requestStatus === 0 && 
           <View>
@@ -79,8 +81,8 @@ export default class Student extends React.Component {
         }
         {
           this.state.requestStatus === 3 && 
-          <View>
-            <Text>{`${this.state.securityInfo.name} will be there in approximately ${this.state.eta} and their phone number is ${this.state.securityInfo.phone}`}</Text>
+          <View style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={{textAlign: 'center'}}>{`${this.state.securityInfo.name} will be there in approximately ${this.state.eta} and their phone number is ${this.state.securityInfo.phone}`}</Text>
             <Button style={styles.buttonStyle} textStyle={{color: 'white'}} onPress={this.finish}>Finish</Button>
           </View>
         }
