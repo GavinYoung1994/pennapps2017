@@ -16,7 +16,7 @@ export default class Security extends React.Component {
         {id: 3, key:'Jon', location: 'Hornyland'},
         {id: 4, key:'Marcus', location:'Stable'}
       ],
-      studentInfo : '',
+      studentInfo : [],
       selectedStudent : null,
       ETA : '',
 	  };
@@ -30,8 +30,19 @@ export default class Security extends React.Component {
             }
             }).then((response) => {
               if (response.status == 200) {
-                this.setState({studentInfo: response._bodyText});
-                alert(this.state.studentInfo);
+                rawStudentInfo = response._bodyText.split('!');
+                resultArray = [];
+                for (i = 0; i < rawStudentInfo.length; ++i) {
+                  if (i % 2 == 0) {
+                    newStudentInfo = {};
+                    newStudentInfo.hashId = rawStudentInfo[i];
+                  }
+                  else {
+                    newStudentInfo.location = rawStudentInfo[i];
+                    resultArray.push(newStudentInfo);
+                  }
+                }
+                this.setState({studentInfo: resultArray});
               }
               else {
                 alert('Failed to get student infomation');
@@ -50,7 +61,6 @@ export default class Security extends React.Component {
   }
 
   confirmPickup = (Id) => {
-    console.log(`${this.props.getHash()}`);
     if (this.state.ETA === '') {
       alert('ETA can not be empty!');
     }
@@ -85,10 +95,10 @@ export default class Security extends React.Component {
             <Text>Current Requests</Text> 
             <List style={{width: 400}}>
               <FlatList
-                data = {this.state.dummy}
+                data = {this.state.studentInfo}
                 renderItem = {({item}) => (
                   <ListItem
-                    title={`${item.key}`}
+                    title={`${item.hashId}`}
                     subtitle={`${item.location}`}
                     containerStyle={{ borderBottomWidth: 0 }}
                     onPress={() => {this.expandRequestItem(item)}}
@@ -111,7 +121,7 @@ export default class Security extends React.Component {
             value={this.state.ETA}
             />
           </View>
-          <Button onPress={() => {this.confirmPickup(this.state.selectedStudent.id)}} title="Confirm Pickup!"/>
+          <Button onPress={() => {this.confirmPickup(this.state.selectedStudent.hashId)}} title="Confirm Pickup!"/>
           <Button onPress={this.backToList} title="Back"/></View>
           }
       </View>
